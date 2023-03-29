@@ -6,7 +6,7 @@ interface Props {
   name: string;
   imgColor?: string;
   imgURL?: string;
-  likeCount: number;
+  likeCount: string;
 }
 
 function TimeTableItem(props: Props) {

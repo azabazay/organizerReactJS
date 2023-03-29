@@ -1,8 +1,42 @@
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Fragment } from "react";
 import ScheduleHeader from "./ScheduleHeader";
 import TimeTableItem from "./TimeTableItem";
+import ITimeTableItemData from "../types/ScheduleModels";
+import ScheduleService from "../services/ScheduleService";
 
-function Schedule() {
+interface Props {
+  userId?: string;
+}
+
+function Schedule(props: Props) {
+  let { id } = useParams();
+  if (!props.userId && props.userId == "") {
+    id = props.userId;
+  }
+
+  const [userEvents, setUserEvents] = useState<Array<ITimeTableItemData>>([]);
+
+  useEffect(() => {
+    retrieveUserEvents();
+  }, []);
+
+  const retrieveUserEvents = () => {
+    ScheduleService.getUserEvents(id)
+      .then((response: any) => {
+        if (response.status == 200) {
+          setUserEvents(response.data["data"]);
+          console.log(response.data);
+        } else {
+          console.log(response.data["error"]);
+        }
+      })
+      .catch((e: Error) => {
+        console.log(e);
+      });
+  };
+
   return (
     <Fragment>
       <link
@@ -20,65 +54,17 @@ function Schedule() {
               <div className="tab-content">
                 <div className="tab-pane show active">
                   <div className="row">
-                    <div className="col-md-6">
-                      <TimeTableItem
-                        imgColor="FFB6C1"
-                        timeStart="4:00pm"
-                        timeEnd="5:00pm"
-                        name="Contemporary Dance"
-                        likeCount={11}
-                      />
-                    </div>
-
-                    <div className="col-md-6">
-                      <TimeTableItem
-                        imgColor="00FFFF"
-                        timeStart="5:00pm"
-                        timeEnd="6:00pm"
-                        name="Break Dance"
-                        likeCount={28}
-                      />
-                    </div>
-
-                    <div className="col-md-6">
-                      <TimeTableItem
-                        imgColor="8A2BE2"
-                        timeStart="5:00pm"
-                        timeEnd="6:00pm"
-                        name="Street Dance"
-                        likeCount={28}
-                      />
-                    </div>
-
-                    <div className="col-md-6">
-                      <TimeTableItem
-                        imgColor="6495ED"
-                        timeStart="7:00pm"
-                        timeEnd="8:00pm"
-                        name="Yoga"
-                        likeCount={23}
-                      />
-                    </div>
-
-                    <div className="col-md-6">
-                      <TimeTableItem
-                        imgColor="00FFFF"
-                        timeStart="6:00pm"
-                        timeEnd="7:00pm"
-                        name="Stretching"
-                        likeCount={14}
-                      />
-                    </div>
-
-                    <div className="col-md-6">
-                      <TimeTableItem
-                        imgColor="008B8B"
-                        timeStart="8:00pm"
-                        timeEnd="9:00pm"
-                        name="Street Dance"
-                        likeCount={9}
-                      />
-                    </div>
+                    {userEvents.map((item, i) => (
+                      <div className="col-md-6" key={i}>
+                        <TimeTableItem
+                          imgColor={item.imgColor}
+                          timeStart={item.timeStart}
+                          timeEnd={item.timeEnd}
+                          name={item.name}
+                          likeCount={item.likeCount}
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
