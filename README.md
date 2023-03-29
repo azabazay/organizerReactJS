@@ -1,4 +1,4 @@
 # organizerReactJS
 
-# START PROEJCT
-# npm run start
+### START PROEJCT
+`npm run start`
