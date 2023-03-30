@@ -26,7 +26,7 @@ function Schedule(props: Props) {
     ScheduleService.getUserEvents(id)
       .then((response: any) => {
         if (response.status == 200) {
-          setUserEvents(response.data["data"]);
+          setUserEvents(response.data);
           console.log(response.data);
         } else {
           console.log(response.data["error"]);
